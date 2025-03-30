@@ -25,11 +25,10 @@ type ChartData = {
 
 interface PortfolioChartProps {
   data: ChartData[];
-  period?: '1D' | '1W' | '1M' | '3M' | '1Y';
-  className?: string;
+  period?: '1D' | '1W' | '1M' | '1Y';
 }
 
-export function PortfolioChart({ data, period = '1D', className = '' }: PortfolioChartProps) {
+export function PortfolioChart({ data, period = '1D' }: PortfolioChartProps) {
   const [showVolume, setShowVolume] = useState(true);
   const [showMA, setShowMA] = useState(true);
   const [chartType, setChartType] = useState<'area' | 'line'>('area');
@@ -47,23 +46,21 @@ export function PortfolioChart({ data, period = '1D', className = '' }: Portfoli
     });
   }, [data]);
 
-  // Format date for x-axis
   const formatXAxis = (tickItem: string) => {
     const date = new Date(tickItem);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      year: '2-digit'
-    }).format(date);
-  };
-
-  // Format tooltip date
-  const formatTooltipDate = (value: string) => {
-    const date = new Date(value);
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric'
-    }).format(date);
+    
+    switch (period) {
+      case '1D':
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      case '1W':
+        return date.toLocaleDateString([], { weekday: 'short', day: 'numeric' });
+      case '1M':
+        return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+      case '1Y':
+        return date.toLocaleDateString([], { month: 'short', year: '2-digit' });
+      default:
+        return tickItem;
+    }
   };
 
   const formatTooltipLabel = (label: string) => {
@@ -71,13 +68,32 @@ export function PortfolioChart({ data, period = '1D', className = '' }: Portfoli
     
     switch (period) {
       case '1D':
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleString([], { 
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+          weekday: 'short',
+          month: 'short',
+          day: 'numeric'
+        });
       case '1W':
-        return date.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' });
+        return date.toLocaleDateString([], { 
+          weekday: 'long',
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
       case '1M':
-        return date.toLocaleDateString([], { month: 'long', day: 'numeric' });
+        return date.toLocaleDateString([], { 
+          month: 'long',
+          day: 'numeric',
+          year: 'numeric'
+        });
       case '1Y':
-        return date.toLocaleDateString([], { month: 'long', year: 'numeric' });
+        return date.toLocaleDateString([], { 
+          month: 'long',
+          year: 'numeric'
+        });
       default:
         return label;
     }
@@ -94,26 +110,8 @@ export function PortfolioChart({ data, period = '1D', className = '' }: Portfoli
     }).format(volume);
   };
 
-  // Custom tooltip
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-zinc-900 border border-zinc-800 p-3 rounded-lg shadow-lg">
-          <p className="text-zinc-400 text-sm mb-1">{formatTooltipDate(label)}</p>
-          <p className="text-zinc-100 font-medium">
-            ${payload[0].value.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
   return (
-    <div className={`h-full flex flex-col ${className}`}>
+    <div className="h-full flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-2">
           <Button
@@ -174,11 +172,13 @@ export function PortfolioChart({ data, period = '1D', className = '' }: Portfoli
               tickFormatter={formatXAxis}
               stroke="#52525b"
               tick={{ fill: '#a1a1aa', fontSize: 12 }}
-              tickLine={{ stroke: '#52525b' }}
               axisLine={{ stroke: '#52525b' }}
               dy={16}
-              minTickGap={30}
+              minTickGap={40}
               interval="preserveStartEnd"
+              angle={period === '1M' ? -45 : 0}
+              textAnchor={period === '1M' ? 'end' : 'middle'}
+              height={period === '1M' ? 60 : 30}
             />
             <YAxis
               yAxisId="price"

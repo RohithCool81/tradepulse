@@ -1,19 +1,17 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Providers } from '@/app/providers';
-import { Toaster } from '@/components/ui/toaster';
+import { Header } from '@/app/components/Header';
 import { Footer } from '@/app/components/Footer';
+import { Toaster } from '@/components/ui/toaster';
+import { ThemeProvider } from 'next-themes';
+import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'TradePulse',
-  description: 'A modern trading platform with real-time market data visualization.',
-  other: {
-    'cache-version': new Date().toISOString(), // Force new build with timestamp
-    'build-id': Math.random().toString(36).substring(7),
-  },
+  description: 'AI-powered portfolio management and market analysis platform',
 };
 
 export default function RootLayout({
@@ -22,14 +20,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.className} min-h-screen bg-background text-foreground`}>
+    <html lang="en" className="dark">
+      <body className={inter.className}>
         <Providers>
-          <div className="min-h-screen bg-zinc-950">
-            {children}
-            <Footer />
-            <Toaster />
-          </div>
+          <Header />
+          {children}
+          <Footer />
+          <Toaster />
         </Providers>
       </body>
     </html>
