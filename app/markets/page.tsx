@@ -21,171 +21,203 @@ import {
 } from 'lucide-react';
 
 // Mock market data
-const generateMarketData = () => ({
-  indices: [
-    {
-      name: 'S&P 500',
-      symbol: 'SPX',
-      price: 5200 + Math.random() * 100,
-      change: 1.2 + Math.random(),
-      volume: '2.8B',
-    },
-    {
-      name: 'Nasdaq',
-      symbol: 'NDX',
-      price: 18200 + Math.random() * 200,
-      change: -0.8 + Math.random(),
-      volume: '4.2B',
-    },
-    {
-      name: 'Dow Jones',
-      symbol: 'DJI',
-      price: 38500 + Math.random() * 150,
-      change: 0.5 + Math.random(),
-      volume: '1.9B',
-    },
-  ],
-  indianIndices: [
-    {
-      name: 'Nifty 50',
-      symbol: 'NIFTY',
-      price: 22400 + Math.random() * 100,
-      change: 0.8 + Math.random(),
-      volume: '125M',
-    },
-    {
-      name: 'Sensex',
-      symbol: 'SENSEX',
-      price: 74200 + Math.random() * 200,
-      change: 0.9 + Math.random(),
-      volume: '98M',
-    },
-    {
-      name: 'Bank Nifty',
-      symbol: 'BANKNIFTY',
-      price: 46800 + Math.random() * 150,
-      change: -0.3 + Math.random(),
-      volume: '82M',
-    },
-  ],
-  trendingStocks: [
-    {
-      symbol: 'NVDA',
-      name: 'NVIDIA',
-      price: 875 + Math.random() * 20,
-      change: 4.2 + Math.random(),
-      volume: '42.5M',
-    },
-    {
-      symbol: 'AMD',
-      name: 'Advanced Micro Devices',
-      price: 180 + Math.random() * 10,
-      change: -2.1 + Math.random(),
-      volume: '28.3M',
-    },
-    {
-      symbol: 'TSLA',
-      name: 'Tesla',
-      price: 172 + Math.random() * 8,
-      change: 1.8 + Math.random(),
-      volume: '35.7M',
-    },
-    {
-      symbol: 'META',
-      name: 'Meta Platforms',
-      price: 485 + Math.random() * 15,
-      change: 2.5 + Math.random(),
-      volume: '22.1M',
-    },
-  ],
-  sectors: [
-    { name: 'Technology', performance: 2.8, trend: 'up' },
-    { name: 'Healthcare', performance: -1.2, trend: 'down' },
-    { name: 'Finance', performance: 0.9, trend: 'up' },
-    { name: 'Energy', performance: -0.5, trend: 'down' },
-    { name: 'Consumer', performance: 1.5, trend: 'up' },
-    { name: 'Industrial', performance: 0.3, trend: 'up' },
-  ],
-  marketBreadth: {
-    advancing: 285,
-    declining: 215,
-    unchanged: 32,
-    newHighs: 45,
-    newLows: 12,
-  },
-  marketNews: [
-    {
-      title: "Fed Signals Rate Cut Timeline",
-      description: "Federal Reserve hints at potential rate cuts in coming months, markets respond positively.",
-      impact: {
-        regions: ["US", "Global"],
-        sectors: ["Banking", "Real Estate"],
-        sentiment: "Positive",
-        magnitude: "High"
+const generateMarketData = () => {
+  // Helper function to generate realistic price movements
+  const generatePriceChange = (baseChange: number) => {
+    const randomFactor = Math.random() * 0.6 - 0.3; // Random factor between -0.3 and 0.3
+    return baseChange + randomFactor;
+  };
+
+  // Helper function to generate realistic volume
+  const generateVolume = (base: number) => {
+    const units = ['K', 'M', 'B'];
+    const unit = units[Math.floor(Math.random() * 2)];
+    const volume = (base + Math.random() * base * 0.2).toFixed(1);
+    return `${volume}${unit}`;
+  };
+
+  return {
+    indices: [
+      {
+        name: 'S&P 500',
+        symbol: 'SPX',
+        price: 5123.45 + Math.random() * 25,
+        change: generatePriceChange(0.8),
+        volume: '4.2B',
       },
-      time: "2h ago"
-    },
-    {
-      title: "India's Tech Exports Surge",
-      description: "Indian IT services exports show 15% YoY growth, boosting market sentiment.",
-      impact: {
-        regions: ["India", "Asia"],
-        sectors: ["Technology", "Services"],
-        sentiment: "Positive",
-        magnitude: "Medium"
+      {
+        name: 'Nasdaq',
+        symbol: 'NDX',
+        price: 17892.34 + Math.random() * 40,
+        change: generatePriceChange(-0.5),
+        volume: '5.1B',
       },
-      time: "4h ago"
-    },
-    {
-      title: "Oil Prices Volatility",
-      description: "Geopolitical tensions in Middle East cause oil price fluctuations.",
-      impact: {
-        regions: ["Global", "Middle East"],
-        sectors: ["Energy", "Transportation"],
-        sentiment: "Negative",
-        magnitude: "High"
+      {
+        name: 'Dow Jones',
+        symbol: 'DJI',
+        price: 38456.78 + Math.random() * 30,
+        change: generatePriceChange(0.3),
+        volume: '2.8B',
       },
-      time: "6h ago"
-    },
-    {
-      title: "Semiconductor Supply Chain Update",
-      description: "Global chip shortage showing signs of easing, production ramping up.",
-      impact: {
-        regions: ["Asia", "US", "Europe"],
-        sectors: ["Technology", "Automotive"],
-        sentiment: "Positive",
-        magnitude: "Medium"
+    ],
+    indianIndices: [
+      {
+        name: 'Nifty 50',
+        symbol: 'NIFTY',
+        price: 22345.67 + Math.random() * 50,
+        change: generatePriceChange(0.6),
+        volume: '234.5M',
       },
-      time: "8h ago"
-    }
-  ],
-  marketImpacts: [
-    {
-      event: "Interest Rate Changes",
-      affects: [
-        { market: "US Stocks", impact: "High", direction: "Positive" },
-        { market: "Indian Markets", impact: "Medium", direction: "Positive" },
-        { market: "Global Bonds", impact: "High", direction: "Negative" }
-      ]
+      {
+        name: 'Sensex',
+        symbol: 'SENSEX',
+        price: 74123.45 + Math.random() * 100,
+        change: generatePriceChange(0.4),
+        volume: '186.3M',
+      },
+      {
+        name: 'Bank Nifty',
+        symbol: 'BANKNIFTY',
+        price: 46789.12 + Math.random() * 75,
+        change: generatePriceChange(-0.2),
+        volume: '142.8M',
+      },
+    ],
+    trendingStocks: [
+      {
+        symbol: 'NVDA',
+        name: 'NVIDIA Corporation',
+        price: 878.45 + Math.random() * 15,
+        change: generatePriceChange(2.1),
+        volume: generateVolume(42.5),
+      },
+      {
+        symbol: 'AAPL',
+        name: 'Apple Inc.',
+        price: 172.34 + Math.random() * 5,
+        change: generatePriceChange(-1.2),
+        volume: generateVolume(65.8),
+      },
+      {
+        symbol: 'MSFT',
+        name: 'Microsoft Corporation',
+        price: 425.67 + Math.random() * 8,
+        change: generatePriceChange(0.9),
+        volume: generateVolume(38.2),
+      },
+      {
+        symbol: 'TSLA',
+        name: 'Tesla, Inc.',
+        price: 175.89 + Math.random() * 6,
+        change: generatePriceChange(-2.3),
+        volume: generateVolume(55.4),
+      },
+      {
+        symbol: 'META',
+        name: 'Meta Platforms, Inc.',
+        price: 505.23 + Math.random() * 10,
+        change: generatePriceChange(1.5),
+        volume: generateVolume(28.7),
+      },
+      {
+        symbol: 'AMZN',
+        name: 'Amazon.com, Inc.',
+        price: 178.56 + Math.random() * 7,
+        change: generatePriceChange(0.7),
+        volume: generateVolume(45.3),
+      },
+    ],
+    sectors: [
+      { name: 'Technology', performance: generatePriceChange(1.8), trend: 'up' },
+      { name: 'Healthcare', performance: generatePriceChange(-0.7), trend: 'down' },
+      { name: 'Finance', performance: generatePriceChange(0.5), trend: 'up' },
+      { name: 'Energy', performance: generatePriceChange(-1.2), trend: 'down' },
+      { name: 'Consumer', performance: generatePriceChange(0.9), trend: 'up' },
+      { name: 'Industrial', performance: generatePriceChange(0.2), trend: 'up' },
+      { name: 'Materials', performance: generatePriceChange(-0.4), trend: 'down' },
+      { name: 'Real Estate', performance: generatePriceChange(0.3), trend: 'up' },
+    ],
+    marketBreadth: {
+      advancing: 285 + Math.floor(Math.random() * 30),
+      declining: 215 + Math.floor(Math.random() * 25),
+      unchanged: 32 + Math.floor(Math.random() * 10),
+      newHighs: 45 + Math.floor(Math.random() * 8),
+      newLows: 12 + Math.floor(Math.random() * 6),
     },
-    {
-      event: "Oil Price Volatility",
-      affects: [
-        { market: "Energy Stocks", impact: "High", direction: "Positive" },
-        { market: "Indian Rupee", impact: "Medium", direction: "Negative" },
-        { market: "Transportation", impact: "Medium", direction: "Negative" }
-      ]
-    },
-    {
-      event: "Tech Sector Growth",
-      affects: [
-        { market: "NASDAQ", impact: "High", direction: "Positive" },
-        { market: "Indian IT Stocks", impact: "High", direction: "Positive" },
-        { market: "Asian Markets", impact: "Medium", direction: "Positive" }
-      ]
-    }
-  ]
-});
+    marketNews: [
+      {
+        title: "Fed Signals Rate Cut Timeline",
+        description: "Federal Reserve hints at potential rate cuts in coming months, markets respond positively.",
+        impact: {
+          regions: ["US", "Global"],
+          sectors: ["Banking", "Real Estate"],
+          sentiment: "Positive",
+          magnitude: "High"
+        },
+        time: "2h ago"
+      },
+      {
+        title: "India's Tech Exports Surge",
+        description: "Indian IT services exports show 15% YoY growth, boosting market sentiment.",
+        impact: {
+          regions: ["India", "Asia"],
+          sectors: ["Technology", "Services"],
+          sentiment: "Positive",
+          magnitude: "Medium"
+        },
+        time: "4h ago"
+      },
+      {
+        title: "Oil Prices Volatility",
+        description: "Geopolitical tensions in Middle East cause oil price fluctuations.",
+        impact: {
+          regions: ["Global", "Middle East"],
+          sectors: ["Energy", "Transportation"],
+          sentiment: "Negative",
+          magnitude: "High"
+        },
+        time: "6h ago"
+      },
+      {
+        title: "Semiconductor Supply Chain Update",
+        description: "Global chip shortage showing signs of easing, production ramping up.",
+        impact: {
+          regions: ["Asia", "US", "Europe"],
+          sectors: ["Technology", "Automotive"],
+          sentiment: "Positive",
+          magnitude: "Medium"
+        },
+        time: "8h ago"
+      }
+    ],
+    marketImpacts: [
+      {
+        event: "Interest Rate Changes",
+        affects: [
+          { market: "US Stocks", impact: "High", direction: "Positive" },
+          { market: "Indian Markets", impact: "Medium", direction: "Positive" },
+          { market: "Global Bonds", impact: "High", direction: "Negative" }
+        ]
+      },
+      {
+        event: "Oil Price Volatility",
+        affects: [
+          { market: "Energy Stocks", impact: "High", direction: "Positive" },
+          { market: "Indian Rupee", impact: "Medium", direction: "Negative" },
+          { market: "Transportation", impact: "Medium", direction: "Negative" }
+        ]
+      },
+      {
+        event: "Tech Sector Growth",
+        affects: [
+          { market: "NASDAQ", impact: "High", direction: "Positive" },
+          { market: "Indian IT Stocks", impact: "High", direction: "Positive" },
+          { market: "Asian Markets", impact: "Medium", direction: "Positive" }
+        ]
+      }
+    ]
+  };
+};
 
 export default function MarketsPage() {
   const [marketData, setMarketData] = useState(generateMarketData());
@@ -281,7 +313,7 @@ export default function MarketsPage() {
             </TabsContent>
           </Tabs>
         </div>
-
+        
         {/* Market News and Impact Analysis */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <Card className="p-6 bg-zinc-900/50 border-zinc-800">

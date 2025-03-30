@@ -26,9 +26,10 @@ type ChartData = {
 interface PortfolioChartProps {
   data: ChartData[];
   period?: '1D' | '1W' | '1M' | '1Y';
+  className?: string;
 }
 
-export function PortfolioChart({ data, period = '1D' }: PortfolioChartProps) {
+export function PortfolioChart({ data, period = '1D', className = '' }: PortfolioChartProps) {
   const [showVolume, setShowVolume] = useState(true);
   const [showMA, setShowMA] = useState(true);
   const [chartType, setChartType] = useState<'area' | 'line'>('area');
@@ -46,21 +47,23 @@ export function PortfolioChart({ data, period = '1D' }: PortfolioChartProps) {
     });
   }, [data]);
 
+  // Format date for x-axis
   const formatXAxis = (tickItem: string) => {
     const date = new Date(tickItem);
-    
-    switch (period) {
-      case '1D':
-        return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-      case '1W':
-        return date.toLocaleDateString(undefined, { weekday: 'short' });
-      case '1M':
-        return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
-      case '1Y':
-        return date.toLocaleDateString(undefined, { month: 'short' });
-      default:
-        return tickItem;
-    }
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      year: '2-digit'
+    }).format(date);
+  };
+
+  // Format tooltip date
+  const formatTooltipDate = (value: string) => {
+    const date = new Date(value);
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(date);
   };
 
   const formatTooltipLabel = (label: string) => {
@@ -91,8 +94,26 @@ export function PortfolioChart({ data, period = '1D' }: PortfolioChartProps) {
     }).format(volume);
   };
 
+  // Custom tooltip
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-zinc-900 border border-zinc-800 p-3 rounded-lg shadow-lg">
+          <p className="text-zinc-400 text-sm mb-1">{formatTooltipDate(label)}</p>
+          <p className="text-zinc-100 font-medium">
+            ${payload[0].value.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            })}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
-    <div className="h-full flex flex-col">
+    <div className={`h-full flex flex-col ${className}`}>
       <div className="flex justify-between items-center mb-4">
         <div className="flex gap-2">
           <Button
