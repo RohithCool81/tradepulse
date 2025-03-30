@@ -1,9 +1,9 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Header } from '@/app/components/Header';
-import { Footer } from '@/app/components/Footer';
+import { Providers } from '@/app/providers';
 import { Toaster } from '@/components/ui/toaster';
+import { Footer } from '@/app/components/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -18,14 +18,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <div className="min-h-screen bg-background text-foreground">
-          <Header />
+        <Providers>
           {children}
           <Footer />
           <Toaster />
-        </div>
+        </Providers>
       </body>
     </html>
   );
