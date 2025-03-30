@@ -109,8 +109,8 @@ type ChartData = {
   volume?: number;
 };
 
-function generateChartData() {
-  const data = [];
+function generateChartData(): ChartData[] {
+  const data: ChartData[] = [];
   const startDate = new Date();
   startDate.setMonth(startDate.getMonth() - 6);
 
@@ -118,7 +118,7 @@ function generateChartData() {
     const date = new Date(startDate);
     date.setDate(date.getDate() + i);
     data.push({
-      date: date.toISOString(),
+      timestamp: date.toISOString(),
       value: 100000 + Math.sin(i * 0.1) * 20000 + i * 100 + Math.random() * 5000
     });
   }
