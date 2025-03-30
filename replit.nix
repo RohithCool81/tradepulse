@@ -1,20 +1,11 @@
-{
-  description = "TradePulse - Trading Platform";
-  
-  deps = {
-    pkgs = import <nixpkgs> {
-      system = "x86_64-linux";
+{ pkgs }: {
+    deps = [
+        pkgs.nodejs-20_x
+        pkgs.nodePackages.typescript-language-server
+        pkgs.yarn
+        pkgs.replitPackages.jest
+    ];
+    env = {
+        NEXT_TELEMETRY_DISABLED = "1";
     };
-  };
-
-  env = {
-    NEXT_TELEMETRY_DISABLED = "1";
-  };
-
-  packages = with pkgs; [
-    nodejs_20
-    nodePackages.npm
-    nodePackages.yarn
-    git
-  ];
 } 

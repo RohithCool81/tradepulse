@@ -1,5 +1,6 @@
 run = "npm run dev"
-hidden = [".build", ".config"]
+hidden = [".config", "package-lock.json"]
+entrypoint = "app/page.tsx"
 
 [nix]
 channel = "stable-22_11"
@@ -14,10 +15,10 @@ language = "nodejs"
 [packager.features]
 packageSearch = true
 guessImports = true
+enabledForHosting = false
 
 [languages.javascript]
 pattern = "**/{*.js,*.jsx,*.ts,*.tsx}"
-syntax = "javascript"
 
 [languages.javascript.languageServer]
 start = [ "typescript-language-server", "--stdio" ]
