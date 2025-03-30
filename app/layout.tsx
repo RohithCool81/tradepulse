@@ -22,12 +22,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className={`${inter.className} min-h-screen bg-background text-foreground`}>
         <Providers>
-          {children}
-          <Footer />
-          <Toaster />
+          <div className="min-h-screen bg-zinc-950">
+            {children}
+            <Footer />
+            <Toaster />
+          </div>
         </Providers>
       </body>
     </html>
