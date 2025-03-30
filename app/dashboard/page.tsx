@@ -119,15 +119,21 @@ const topAssets = [
   { symbol: 'MSFT', name: 'Microsoft', change: +1.9, price: 425.30 }
 ];
 
-type Period = '1D' | '1W' | '1M' | '3M' | 'YTD';
+type Period = keyof typeof timePeriodsData;
 
-const PERIODS: Period[] = ['1D', '1W', '1M', '3M', 'YTD'];
+const PERIODS: Period[] = ['1D', '1W', '1M', '3M', '1Y'];
 
 type ChartData = {
   timestamp: string;
   value: number;
   volume?: number;
 };
+
+interface PortfolioChartProps {
+  data: ChartData[];
+  period?: Period;
+  className?: string;
+}
 
 function generateChartData(): ChartData[] {
   const data: ChartData[] = [];
@@ -146,16 +152,16 @@ function generateChartData(): ChartData[] {
 }
 
 export default function DashboardPage() {
-  const [selectedPeriod, setSelectedPeriod] = useState<'1D' | '1W' | '1M' | '1Y'>('1D');
-  const [chartData, setChartData] = useState(generateChartData());
+  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('1D');
+  const [chartData, setChartData] = useState(() => timePeriodsData['1D']);
   const [portfolioValue, setPortfolioValue] = useState(124892.63);
   const [dailyChange, setDailyChange] = useState(2489.12);
   const [percentageChange, setPercentageChange] = useState(2.03);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const newData = generateChartData();
-      setChartData(newData);
+      // Update chart data based on selected period
+      setChartData(timePeriodsData[selectedPeriod]);
       
       // Update portfolio value with small random changes
       const change = (Math.random() - 0.5) * 1000;
@@ -165,7 +171,12 @@ export default function DashboardPage() {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [portfolioValue]);
+  }, [portfolioValue, selectedPeriod]);
+
+  // Update chart data when period changes
+  useEffect(() => {
+    setChartData(timePeriodsData[selectedPeriod]);
+  }, [selectedPeriod]);
 
   return (
     <main className="min-h-screen bg-zinc-950 py-8">
@@ -225,7 +236,7 @@ export default function DashboardPage() {
                 <h2 className="text-xl font-semibold text-zinc-100">Portfolio Performance</h2>
               </div>
               <div className="flex gap-2">
-                {(['1D', '1W', '1M', '1Y'] as const).map((period) => (
+                {(Object.keys(timePeriodsData) as TimePeriod[]).map((period) => (
                   <Button
                     key={period}
                     variant={selectedPeriod === period ? "default" : "outline"}
