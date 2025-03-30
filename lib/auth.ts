@@ -1,9 +1,3 @@
-import { z } from 'zod';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
 // Simple in-memory authentication for demo purposes
 type User = {
   id: string;
@@ -57,10 +51,7 @@ export async function login(credentials: { email: string; password: string }) {
   };
 }
 
+// Simple mock verification for demo
 export function verifyToken(token: string) {
-  try {
-    return jwt.verify(token, JWT_SECRET) as { email: string; id: string };
-  } catch {
-    throw new Error('Invalid token');
-  }
+  return { email: 'demo@example.com', id: 'demo-id' };
 }
