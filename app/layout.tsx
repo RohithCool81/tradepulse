@@ -11,7 +11,8 @@ export const metadata: Metadata = {
   title: 'TradePulse',
   description: 'A modern trading platform with real-time market data visualization.',
   other: {
-    'cache-version': '1.0.1', // Force cache bust
+    'cache-version': new Date().toISOString(), // Force new build with timestamp
+    'build-id': Math.random().toString(36).substring(7),
   },
 };
 
