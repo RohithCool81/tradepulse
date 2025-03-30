@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { Header } from '@/components/Header';
+import { Header } from '@/app/components/Header';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from 'next-themes';
 import { Providers } from './providers';
@@ -9,9 +9,8 @@ import { Providers } from './providers';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'TradeSim - Real-Time Trading Simulator',
-  description:
-    'Experience real-time trading with our advanced trading simulator',
+  title: 'TradePulse',
+  description: 'AI-powered portfolio management and market analysis platform',
 };
 
 export default function RootLayout({
@@ -20,18 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <Providers>
           <Header />
-          <Providers>{children}</Providers>
-        </ThemeProvider>
-        <Toaster />
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
