@@ -14,31 +14,51 @@ import { AddStockDialog } from '@/app/components/AddStockDialog';
 
 // Simplified mock data
 const timePeriodsData = {
-  '1D': Array.from({ length: 24 }, (_, i) => ({
-    timestamp: `${i.toString().padStart(2, '0')}:00`,
-    value: 120000 + Math.sin(i * 0.5) * 5000 + Math.random() * 2000,
-    volume: 1000000 + Math.random() * 500000
-  })),
-  '1W': Array.from({ length: 7 }, (_, i) => ({
-    timestamp: `Day ${i + 1}`,
-    value: 115000 + Math.sin(i * 0.8) * 8000 + Math.random() * 3000,
-    volume: 1000000 + Math.random() * 500000
-  })),
-  '1M': Array.from({ length: 30 }, (_, i) => ({
-    timestamp: `Day ${i + 1}`,
-    value: 105000 + Math.sin(i * 0.2) * 15000 + Math.random() * 5000,
-    volume: 1000000 + Math.random() * 500000
-  })),
-  '3M': Array.from({ length: 90 }, (_, i) => ({
-    timestamp: `Day ${i + 1}`,
-    value: 95000 + Math.sin(i * 0.1) * 20000 + Math.random() * 7000,
-    volume: 1000000 + Math.random() * 500000
-  })),
-  '1Y': Array.from({ length: 12 }, (_, i) => ({
-    timestamp: `Month ${i + 1}`,
-    value: 80000 + Math.sin(i * 0.3) * 25000 + Math.random() * 8000,
-    volume: 1000000 + Math.random() * 500000
-  }))
+  '1D': Array.from({ length: 24 }, (_, i) => {
+    const date = new Date();
+    date.setHours(date.getHours() - (24 - i));
+    return {
+      timestamp: date.toISOString(),
+      value: 120000 + Math.sin(i * 0.5) * 5000 + Math.random() * 2000,
+      volume: 1000000 + Math.random() * 500000
+    };
+  }),
+  '1W': Array.from({ length: 7 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (7 - i));
+    return {
+      timestamp: date.toISOString(),
+      value: 115000 + Math.sin(i * 0.8) * 8000 + Math.random() * 3000,
+      volume: 1000000 + Math.random() * 500000
+    };
+  }),
+  '1M': Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (30 - i));
+    return {
+      timestamp: date.toISOString(),
+      value: 105000 + Math.sin(i * 0.2) * 15000 + Math.random() * 5000,
+      volume: 1000000 + Math.random() * 500000
+    };
+  }),
+  '3M': Array.from({ length: 90 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (90 - i));
+    return {
+      timestamp: date.toISOString(),
+      value: 95000 + Math.sin(i * 0.1) * 20000 + Math.random() * 7000,
+      volume: 1000000 + Math.random() * 500000
+    };
+  }),
+  '1Y': Array.from({ length: 12 }, (_, i) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - (12 - i));
+    return {
+      timestamp: date.toISOString(),
+      value: 80000 + Math.sin(i * 0.3) * 25000 + Math.random() * 8000,
+      volume: 1000000 + Math.random() * 500000
+    };
+  })
 } as const;
 
 type TimePeriod = keyof typeof timePeriodsData;
