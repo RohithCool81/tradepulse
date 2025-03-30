@@ -4,14 +4,12 @@ import { Inter } from 'next/font/google';
 import { Header } from '@/app/components/Header';
 import { Footer } from '@/app/components/Footer';
 import { Toaster } from '@/components/ui/toaster';
-import { ThemeProvider } from 'next-themes';
-import { Providers } from './providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'TradePulse',
-  description: 'AI-powered portfolio management and market analysis platform',
+  description: 'A modern trading platform with real-time market data visualization.',
 };
 
 export default function RootLayout({
@@ -22,12 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <Providers>
+        <div className="min-h-screen bg-background text-foreground">
           <Header />
           {children}
           <Footer />
           <Toaster />
-        </Providers>
+        </div>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { StockTicker } from '../components/StockTicker';
@@ -10,6 +10,7 @@ import { MiniChart } from '@/app/components/MiniChart';
 import { ArrowUpRight, ArrowDownRight, TrendingUp, Activity, PieChart, Bell, Globe2, Newspaper, Briefcase, TrendingDown, BarChart3, AlertTriangle, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AddStockDialog } from '@/app/components/AddStockDialog';
 
 // Simplified mock data
 const timePeriodsData = {
@@ -108,67 +109,61 @@ type ChartData = {
   volume?: number;
 };
 
-function generateChartData(period: '1D' | '1W' | '1M' | '1Y') {
-  const now = new Date();
-  const data: ChartData[] = [];
-  const baseValue = 100000;
-  let timeStep: number;
-  let steps: number;
-  
-  switch (period) {
-    case '1D':
-      timeStep = 15 * 60 * 1000; // 15 minutes
-      steps = 24 * 4; // 24 hours * 4 (15-min intervals)
-      break;
-    case '1W':
-      timeStep = 24 * 60 * 60 * 1000; // 1 day
-      steps = 7; // 7 days
-      break;
-    case '1M':
-      timeStep = 24 * 60 * 60 * 1000; // 1 day
-      steps = 30; // 30 days
-      break;
-    case '1Y':
-      timeStep = 7 * 24 * 60 * 60 * 1000; // 1 week
-      steps = 52; // 52 weeks
-      break;
-  }
+function generateChartData() {
+  const data = [];
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - 6);
 
-  for (let i = steps - 1; i >= 0; i--) {
-    const timestamp = new Date(now.getTime() - (i * timeStep));
-    const randomChange = (Math.random() - 0.5) * 0.02; // -1% to +1% change
-    const value = baseValue * (1 + randomChange * (steps - i));
-    const volume = Math.floor(Math.random() * 1000000) + 500000;
-    
+  for (let i = 0; i < 180; i++) {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + i);
     data.push({
-      timestamp: timestamp.toISOString(),
-      value: Math.round(value),
-      volume,
+      date: date.toISOString(),
+      value: 100000 + Math.sin(i * 0.1) * 20000 + i * 100 + Math.random() * 5000
     });
   }
-
   return data;
 }
 
 export default function DashboardPage() {
   const [selectedPeriod, setSelectedPeriod] = useState<'1D' | '1W' | '1M' | '1Y'>('1D');
-  const chartData = useMemo(() => generateChartData(selectedPeriod), [selectedPeriod]);
+  const [chartData, setChartData] = useState(generateChartData());
+  const [portfolioValue, setPortfolioValue] = useState(124892.63);
+  const [dailyChange, setDailyChange] = useState(2489.12);
+  const [percentageChange, setPercentageChange] = useState(2.03);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newData = generateChartData();
+      setChartData(newData);
+      
+      // Update portfolio value with small random changes
+      const change = (Math.random() - 0.5) * 1000;
+      setPortfolioValue(prev => prev + change);
+      setDailyChange(change);
+      setPercentageChange((change / portfolioValue) * 100);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [portfolioValue]);
 
   return (
     <main className="min-h-screen bg-zinc-950 py-8">
       <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-zinc-100">Trad</h1>
+            <p className="text-zinc-400 text-sm">Welcome back, Trader</p>
+          </div>
+          <Button variant="outline" size="sm" className="gap-2 text-zinc-300 border-zinc-800">
+            <Activity className="w-4 h-4" />
+            Market Open
+          </Button>
+          <AddStockDialog />
+        </div>
+
         {/* Net Worth Section */}
         <div className="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
-          <div className="md:col-span-2 flex justify-between items-center">
-            <div>
-              <h1 className="text-2xl font-bold text-zinc-100">Trad</h1>
-              <p className="text-zinc-400 text-sm">Welcome back, Trader</p>
-            </div>
-            <Button variant="outline" size="sm" className="gap-2 text-zinc-300 border-zinc-800">
-              <Activity className="w-4 h-4" />
-              Market Open
-            </Button>
-          </div>
           <Card className="p-3 bg-zinc-900/50 border-zinc-800 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500" />
             <div>
@@ -457,12 +452,15 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <div className="text-sm text-zinc-400">Total Value</div>
-                      <div className="text-2xl font-bold text-zinc-100">$124,582.34</div>
+                      <div className="text-2xl font-bold text-zinc-100">${portfolioValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm text-green-500">+2.4% today</div>
-                    <div className="text-xs text-zinc-500">+$2,891.45</div>
+                    <div className={`text-sm ${dailyChange >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {dailyChange >= 0 ? '+' : ''}
+                      {dailyChange.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                    <div className="text-xs text-zinc-500">({percentageChange.toFixed(2)}%)</div>
                   </div>
                 </div>
                 <div className="h-[120px]">
