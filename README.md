@@ -5,6 +5,10 @@ A modern trading platform with real-time market data visualization, portfolio ma
 > ⚠️ This UI was built for the Outlier AI Hackathon (Round 1) for learning and demonstration purposes only.  
 > You're welcome to explore or build upon it, but please give proper credit if you use any part of this project.
 
+## 🔗 Live Demo
+
+Check it out live 👉 [TradePulse UI on Vercel] https://tradepulse-git-main-rohithpulikonda81-gmailcoms-projects.vercel.app
+
 ## Deploying on Replit
 
 1. Create a new Repl
